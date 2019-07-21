@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MefDemoWithPluginsFolder.Contracts
+namespace MefDemoWithPluginsFolder.Task2
 {
     public class Class1
     {
