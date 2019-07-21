@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MefSkeletal.Contracts
+namespace MefSkeletalWithHelp.Contracts
 {
     /// <summary>
     /// Should be implemented by every custom Task implementation
