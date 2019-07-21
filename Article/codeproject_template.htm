@@ -354,9 +354,7 @@ License:     CPOL
     <img  src="images/TestConsoleExe.png"/>
     <hr />
     <h2>Part 2 - Extending the Console EXE by implementing a simple help system</h2>
-    <p>It would be nice if our simple .NET Console EXE could expose some usage documentation. Similar to the PowerShell help system, we want the documentation to be displayed on the command line.
-        Ideally, we would want every Task handler to be responsible for publishing their own documentation.
-        Why not make a separate Task handler for displaying Help (HelpTaskHandler)? The HelpTaskHandler class should leverage the MEF meta-data attributes name and description.
+    <p>It would be nice if our simple .NET Console EXE could expose some usage documentation. Similar to the PowerShell help system, we want the documentation to be displayed on the command line. Ideally, we would want every Task handler to be responsible for publishing their own documentation. Why not make one single implementation of ITaskHandler soley dedicated for displaying Help (<strong>HelpTask.cs</strong>)? The HelpTask class should leverage the MEF meta-data attributes name and description.
     </p>
     <pre>
         ///
@@ -390,9 +388,38 @@ License:     CPOL
         } 
     </pre>
     <h3>Create a new ITaskHanlder implementation to display the help</h3>
+    <p>In the implementation of HelpTask, we have two methods - DisplayAllTasks and DisplayTaskSpecificHelp. To discover information about other Tasks, we need to
+        access an instance of the Container class. The MEF Attribute Import helps us in injecting dependencies when Lazy objects are instantiated
+    </p>
     <pre>
-        TODO
+        [Export(typeof(ITaskHandler))]
+        [ExportMetadata("name", "help")]
+        public class HelpTask : ITaskHandler 
+        { 
+            public void OnExecute(string[] args) 
+            { 
+                if (args.Length  == 0)
+                {
+                    DisplayAllTasks();
+                }
+                else
+                {
+                    string taskname = args[0];
+                    DisplayTaskSpecificHelp(taskname);
+                }
+            }
+            ///
+            ///MEF will resolve this dependency at the time of instantiation
+            ///
+            [Import("parent")]
+            public Container Parent { get; set; }
+        
+        } 
     </pre>
+    <h3>Method - DisplayAllTasks</h3>
+    <pre>TODO</pre>
+    <h3>Method - DisplayTaskSpecificHelp</h3>
+    <pre>TODO</pre>
     <h3>Putting it all together</h3>
     <pre>
         Start
@@ -421,7 +448,6 @@ License:     CPOL
     <h2>Future work  - Downloading plugins on demand</h2>
     <p>Talk about plugins and add ons Notepad++, MS Word</p>
 
-    <hr />
     <hr/>
     <h2>Using the code</h2>
 
