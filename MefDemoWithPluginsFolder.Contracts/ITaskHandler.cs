@@ -4,8 +4,11 @@ using System.Text;
 
 namespace MefDemoWithPluginsFolder.Contracts
 {
+    /// <summary>
+    /// Should be implemented by every custom Task implementation
+    /// </summary>
     public interface ITaskHandler
     {
-        you were here
+        void OnExecute(string[] args);
     }
 }
