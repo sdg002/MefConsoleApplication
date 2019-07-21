@@ -356,6 +356,7 @@ License:     CPOL
     <h2>Part 2 - Extending the Console EXE by implementing a simple help system</h2>
     <p>It would be nice if our simple .NET Console EXE could expose some usage documentation. Similar to the PowerShell help system, we want the documentation to be displayed on the command line. Ideally, we would want every Task handler to be responsible for publishing their own documentation. Why not make one single implementation of ITaskHandler soley dedicated for displaying Help (<strong>HelpTask.cs</strong>)? The HelpTask class should leverage the MEF meta-data attributes name and description.
     </p>
+    <h3>Command line protocol for displaying Help</h3>
     <pre>
         ///
         ///When the the user types any of the following commands 
@@ -474,7 +475,7 @@ License:     CPOL
         }
 
     </pre>
-    <h3>Putting it all together</h3>
+    <h3>Putting it all together - Parsing command line arguments in the Main method</h3>
     <pre>
         Start
         |
@@ -486,7 +487,30 @@ License:     CPOL
         |
         If zero arguments OR args[0] is 'help' then execute task 'help'
     </pre>
-    
+    <pre>
+        static void Main(string[] args)
+        {
+            try
+            {
+                Container container = new Container();
+                string taskname = null;
+                if ((args.Length == 0) || (args[0].ToLower() == "help" ) || (args[0].ToLower() =="/?"))
+                {
+                    taskname = "help";//This is our custom ITaskHandler implementation responsible for displaying Help
+                }
+                else
+                {
+                    taskname = args[0];
+                }
+                container.ExecTask(taskname, args.Skip(1).ToArray());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+    </pre>
     
     <h3>Testing - Displaying list of all Tasks</h3>
     <img src="images/HelpInfoListOfAllTasks.PNG" />
