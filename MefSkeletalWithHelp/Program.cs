@@ -8,7 +8,6 @@ namespace MefSkeletalWithHelp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             try
             {
                 Container container = new Container();

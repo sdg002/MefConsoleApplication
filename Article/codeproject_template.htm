@@ -376,13 +376,22 @@ License:     CPOL
         MyUtil help task1
     </pre>
     <h3>Using MEF metadata to make every Task emit its own documentation</h3>
-    <p>TODO -- talk about metadata to export a short help</p>
+    <p>We will add the "help" meta-data to each of the ITaskHandler implementations. This attribute will store a meaningful usage information</p>
     <pre>
-        Sample metadata with description
+        [Export(typeof(ITaskHandler))] 
+        [ExportMetadata(&quot;name&quot;, &quot;task1&quot;)] 
+        [ExportMetadata(&quot;help&quot;, &quot;This is Task1. Usage: --arg0 value0 --arg1 value1 --arg2 value2&quot;)] 
+        public class Task1 : ITaskHandler 
+        { 
+            public void OnExecute(string[] args) 
+            { 
+                Console.WriteLine(&quot;This is Task 1&quot;); 
+            } 
+        } 
     </pre>
     <h3>Create a new ITaskHanlder implementation to display the help</h3>
     <pre>
-        The name of this Task will be 'help'. HelpTaskHandler TO BE DONE
+        TODO
     </pre>
     <h3>Putting it all together</h3>
     <pre>
@@ -398,8 +407,10 @@ License:     CPOL
     </pre>
     
     
-
-    
+    <h3>Testing - Displaying list of all Tasks</h3>
+    <img src="images/HelpInfoListOfAllTasks.PNG" />
+    <h3>Testing - Displaying Task specific help</h3>
+    <img src="images/HelpInfoTaskSpecific.PNG" />
 
 
     <hr />
