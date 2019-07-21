@@ -220,7 +220,7 @@ License:     CPOL
     </pre>
     
     <h3>.NET Core EXE</h3>
-    <p>Create a .NET Core EXE project. For now we will follow a simple approach where all Task handler classes are contained within the EXE project. In the later stages we will refactor the solution so that every Task is contained in a separate class library project.</p>
+    <p>Create a .NET Core EXE project <strong>MefSkeletal</strong>. For now we will follow a simple approach where all Task handler classes are contained within the EXE project. In the later stages we will refactor the solution so that every Task is contained in a separate class library project.</p>
     <h3>Contract interface</h3>
     <p>Create a <strong>Contracts</strong> subfolder and create a class file <strong>ITaskHandler.cs</strong></p>
     <pre>
@@ -354,15 +354,49 @@ License:     CPOL
     <img  src="images/TestConsoleExe.png"/>
     <hr />
     <h2>Part 2 - Extending the Console EXE by implementing a simple help system</h2>
-    <p>It would be nice if our simple .NET Console EXE can expose some elementary documentation. We want every Task handler to be responsible for publishing their own documentation.
-        Why not make a separate Task handler for displaying Help (HelpTaskHandler). The HelpTaskHandler class should leverage the MEF meta-data attributes name and description.
+    <p>It would be nice if our simple .NET Console EXE could expose some usage documentation. Similar to the PowerShell help system, we want the documentation to be displayed on the command line.
+        Ideally, we would want every Task handler to be responsible for publishing their own documentation.
+        Why not make a separate Task handler for displaying Help (HelpTaskHandler)? The HelpTaskHandler class should leverage the MEF meta-data attributes name and description.
     </p>
     <pre>
-        HelpTaskHandler TO BE DONE
+        ///
+        ///When the the user types any of the following commands 
+        ///     1)Preliminary information should be displayed
+        ///     2)The list of available Tasks should be displayed
+        ///
+        MyUtil help
+        MyUtil /?
+        MyUtil
     </pre>
-
+    <pre>
+        ///
+        ///When the user types the following command, 
+        /// 1)Display help information specific to the task. 
+        ///
+        MyUtil help task1
+    </pre>
     <h3>Using MEF metadata to make every Task emit its own documentation</h3>
     <p>TODO -- talk about metadata to export a short help</p>
+    <pre>
+        Sample metadata with description
+    </pre>
+    <h3>Create a new ITaskHanlder implementation to display the help</h3>
+    <pre>
+        The name of this Task will be 'help'. HelpTaskHandler TO BE DONE
+    </pre>
+    <h3>Putting it all together</h3>
+    <pre>
+        Start
+        |
+        |
+        |
+        Analyze command line arguments
+        |
+        |
+        |
+        If zero arguments OR args[0] is 'help' then execute task 'help'
+    </pre>
+    
     
 
     
