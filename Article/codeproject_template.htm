@@ -417,7 +417,31 @@ License:     CPOL
         } 
     </pre>
     <h3>Method - DisplayAllTasks</h3>
-    <pre>TODO</pre>
+    <pre>
+        /// 
+        /// Display a short list of all Task names. 
+        ///         
+        private void DisplayAllTasks()
+        {
+            Console.WriteLine("List of all Tasks");
+            foreach(var lazy in this.Parent.Tasks)
+            {
+                string task = ((string)lazy.Metadata["name"]).ToLower();
+                if (task == "help") continue;
+                Console.WriteLine("-----------------------");
+                string help = null;
+                if (lazy.Metadata.ContainsKey("help"))
+                {
+                    help = lazy.Metadata["help"] as string;
+                }
+                else
+                {
+                    help = "";
+                }
+                Console.WriteLine($"{task}      {help}");
+            }
+        }
+    </pre>
     <h3>Method - DisplayTaskSpecificHelp</h3>
     <pre>TODO</pre>
     <h3>Putting it all together</h3>

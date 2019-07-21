@@ -27,7 +27,10 @@ namespace MefSkeletalWithHelp.Tasks
             }
 
         }
-
+        /// <summary>
+        /// Display the help description for the specified Task
+        /// </summary>
+        /// <param name="taskname"></param>
         private void DisplayTaskSpecificHelp(string taskname)
         {
             Console.WriteLine($"Displaying help on Task:{taskname}");
@@ -40,7 +43,9 @@ namespace MefSkeletalWithHelp.Tasks
             Console.WriteLine($"Task:{taskname}");
             Console.WriteLine($"{help}");
         }
-
+        /// <summary>
+        /// Display a short list of all Task names.
+        /// </summary>
         private void DisplayAllTasks()
         {
             Console.WriteLine("Basic usage information:");
