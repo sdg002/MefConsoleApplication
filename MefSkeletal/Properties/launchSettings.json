@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MefSkeletal": {
+      "commandName": "Project",
+      "commandLineArgs": "task1"
+    }
+  }
+}

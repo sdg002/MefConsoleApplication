@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Article", "Article\", "{D4ECD324-5FB8-4672-8B46-CC9F5B60BC1C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6.1"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_65125"
+		Debug.AspNetCompiler.PhysicalPath = "Article\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_65125\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_65125"
+		Release.AspNetCompiler.PhysicalPath = "Article\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_65125\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "65125"
+		SlnRelativePath = "Article\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MefSkeletal", "MefSkeletal\MefSkeletal.csproj", "{D386E924-E743-41EB-84F7-4DE3D3A8B064}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4ECD324-5FB8-4672-8B46-CC9F5B60BC1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4ECD324-5FB8-4672-8B46-CC9F5B60BC1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4ECD324-5FB8-4672-8B46-CC9F5B60BC1C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4ECD324-5FB8-4672-8B46-CC9F5B60BC1C}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{D386E924-E743-41EB-84F7-4DE3D3A8B064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D386E924-E743-41EB-84F7-4DE3D3A8B064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D386E924-E743-41EB-84F7-4DE3D3A8B064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D386E924-E743-41EB-84F7-4DE3D3A8B064}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C34AF192-5E5F-4A56-BF47-3BB0FB6F411F}
+	EndGlobalSection
+EndGlobal

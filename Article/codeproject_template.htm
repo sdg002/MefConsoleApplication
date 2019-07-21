@@ -1,0 +1,426 @@
+﻿<!DOCTYPE HTML>
+<!--------------------------------------------------------------------------->  
+<!--                           INTRODUCTION                                
+
+ The CodeProject article submission template (HTML version)
+
+Using this template will help us post your article sooner. To use, just 
+follow the 3 easy steps below:
+ 
+     1. Fill in the article description details
+     2. Add links to your images and downloads
+     3. Include the main article text
+
+That's all there is to it! All formatting will be done by our submission
+scripts and style sheets. 
+
+-->  
+<!--------------------------------------------------------------------------->  
+<!--                        IGNORE THIS SECTION                            -->
+<html>
+<head>
+<title>CodeProject</title>
+<Style>
+BODY, P, TD { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt }
+H2,H3,H4,H5 { color: #ff9900; font-weight: bold; }
+H2 { font-size: 13pt; }
+H3 { font-size: 12pt; }
+H4 { font-size: 10pt; color: black; }
+PRE { BACKGROUND-COLOR: #FBEDBB; FONT-FAMILY: "Courier New", Courier, mono; WHITE-SPACE: pre; }
+CODE { COLOR: #990000; FONT-FAMILY: "Courier New", Courier, mono; }
+</style>
+<link type="text/css" rel="stylesheet" 
+      href="https://codeproject.global.ssl.fastly.net/App_Themes/CodeProject/Css/Main.min.css">
+</head>
+<body bgcolor="#FFFFFF" color=#000000>
+    <!--------------------------------------------------------------------------->
+    <!-------------------------------     STEP 1      --------------------------->
+    <!--  Fill in the details (CodeProject will reformat this section for you) -->
+
+    <pre>
+Title:       Using Managed Extensibility Framework to build a modular Console application
+Author:      Saurabh Dasgupta
+Email:       saurabh_dasgupta@hotmail.com
+Language:    C# 3.0
+Platform:    Windows
+Technology:  Managed Extensibility Framework
+Level:       Intermediate
+Description: This article takes you through a step by step journey of building a fairly large console applicatio which is modularized and also extensible by using the principles of Managed Extensibility Framework
+Section      Enter the Code Project Section you Wish the Article to Appear (TODO)
+SubSection   Enter the Code Project SubSection you Wish the Article to Appear (TODO)
+License:     CPOL
+</pre>
+
+    <!-------------------------------     STEP 2      --------------------------->
+    <!--  Include download and sample image information.                       -->
+
+    <ul class=download>
+        <li><a href="Article_demo.zip">Download demo project - XXX Kb </a></li>
+        <li><a href="Article_src.zip">Download source - XXX Kb</a></li>
+    </ul>
+
+    <p>
+        <img src="Article.gif" alt="Sample Image - maximum width is 600 pixels"
+             style="width:400px; height:200px">
+    </p>
+
+    <!-------------------------------     STEP 3      --------------------------->
+    <!--  Add the article text. Please use simple formatting (<h2>, <p> etc)   -->
+
+    <h2>Problem description</h2>
+    <p>
+        You are developing a command line utility. This could be a suite of custom batch jobs to support the management of an
+        enterprise application. Your command line utility is expected to carry out several back end tasks and each of these tasks
+        is parameterized through arguments that are specific to the task.  This would not appear to be a challenge at all if our requirements
+        are very well bounded and restricted. My experience has taught me that any software is simple when it begins but
+        grows exponentially with the passage of time. Your end users are going to ask for more features and very soon you are facing a daunting task of managing the 
+        development and delivery of a very complex piece of software.
+    </p>
+    
+    <p>If you are building an enterprise application managed tool then your users would be the staff supporting the IT operations in your organization, or 
+        if you are a company like Github or Aws/Azure then millions of developers. 
+        In this article I will present a solution to the above problem by leveraging Microsoft's  Managed Extensibility Framework
+    </p>
+    <h3>Example - A custom backend management tool</h3>
+    <pre>
+        Util.exe --task Backups --from 01/01/2019  --to 30/06/3019 --destination c:\Back\
+        Util.exe --task IndexDocuments
+        Util.exe --task ExtractImages -destination c:\dump\
+    </pre>
+
+    <h3>Example - Github</h3>
+    <pre>
+        git config –global user.name "[name]"
+        git commit -m "[ Type in the commit message]"
+        git diff –staged
+        git rm [file]
+        git checkout -b [branch name]
+    </pre>
+    <h3>Example - Azure CLI</h3>
+    <pre>
+        az group create --name myResourceGroup --location westeurope
+        az vm create --resource-group myResourceGroup --name myVM --image UbuntuLTS --generate-ssh-keys
+        az group delete --name myResourceGroup
+    </pre>
+    <p><strong>TODO Show a block diagram - every command line in a black with an arrow leading to a block which depicts the implementation</strong></p>
+    <h2>Background</h2>
+
+    <p>Knowledge about .NET, C# is essential. Some ideas about Managed Extensibility Framework is good to have</p>
+
+    <h2>Possible approaches</h2>
+
+    <h3>Approach 1 - Custom PowerShell cmdlets</h3>
+    <p>
+        PowerShell is a beautiful framework which can be easily extended by writing custom .NET modules. Both Azure and AWS provide PowerShell interfaces to interact with their respective infrastructure on the Cloud. <strong>TODO - Show pic of Azure PowerShell </strong>
+    </p>
+    <h3>Approach 2 - Multiple command line applications on a per task basis</h3>
+    <p>This is a very simple approach. It works well if your requirements are small and there is a sense of urgency</p>
+    <h3>Approach 3 - Single command line application where every Task is a plugin</h3>
+    <p>In this article, I will be focussing on the third approach. One single command line application. <strong>TODO Show Pic of msbuild</strong></p>
+
+    <h2>Brief introduction to Managed Extensibility Framework (MEF)</h2>
+    <p>
+        MEF is a library built on top of Microsoft .NET  which simplifies the development of plugin based applications.
+        MEF can be considered to be a dependency injection framework with the capability to discover dependencies across assembly partitions. 
+        MEF opens up the possibility of decoupling your main application from the implementations.
+        MEF addresses the a very pertinent question in software development:
+        <strong>Can your application be extended after it has been shipped without having to recompile the entire codebase?</strong>
+        Microsoft's documentation on MEF can be found <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">here</a>.
+    </p>
+    <h3>Step 1 - Design the contract</h3>
+    <pre>
+        public interface IMyPlugin
+        {
+            void DoSomeWork()
+        }
+    </pre>
+    <h3>Step 2 - Implement various plugin classes which implement your contract</h3>
+    <pre>
+         ///
+        ///Class1 in Assembly1
+        ///
+        [Export(typeof(IMyPlugin))]
+        public class Plugin1 : IMyPlugin
+        {
+        }
+
+        ///
+        ///Class2 in Assembly2
+        ///
+        [Export(typeof(IMyPlugin))]
+        public class Plugin2 : IMyPlugin
+        {
+        }
+    </pre>
+
+    <h3>Step 3 - Design your host application to accept the discovered implementations</h3>
+    <pre>
+        ///
+        ///Host application
+        ///
+        public class MyHost 
+        {
+            [ImportMany(typeof(IMyPlugin))]
+            IMyPlugin>[] Plugins {get;set;}
+        }
+    </pre>
+    <h3>Step 4 - Discover plugins using Catalog classes of MEF</h3>
+    <pre>
+        ///
+        ///TO BE DONE  - Show snippets of catalog here
+        ///
+    </pre>
+    <p><strong>TODO  show a block diagram also</strong></p>
+
+    <h2>Lazy loading of classes in MEF</h2>
+    <p>
+        You can make MEF delay the instantiation of the plugin classes. MEF uses the class Lazy to discover implementations and hold a reference to 
+        the metadata of the plugins. The instantiation is done only when required. The class Lazy allows plugins to export meta-data. E.g. an unique name for a plugin
+    </p>
+    <pre>
+         ///
+        ///Plugin class with metadata
+        ///
+        [Export(typeof(IMyPlugin))]
+        [ExportMetadata("name","someplugin2")]
+        [ExportMetadata("description","Description of someplugin2")]
+        public class Plugin2 : IMyPlugin
+        {
+        }
+    </pre>
+    <p>The attribute <strong>ExportMetadata</strong> plays a vital role here. When the class <strong>MyHost</strong> has been composed using MEF, the Dictionary object in the Lazy instance of every invokable plugin class is populated
+        with the keys <strong>name,description </strong>&nbsp;and their values respectively . Remember - the plugin class is not yet instantiated.
+    </p>
+    <pre>
+         ///
+        ///Host application - with lazy loading of plugins
+        ///
+        public class MyHost 
+        {
+            [ImportMany(typeof(IMyPlugin))]
+            Lazy&lt;IMyPlugin,Dictionary&lt;string, object&gt;&gt;[] Plugins {get;set;}
+        }
+
+    </pre>
+    <hr />
+    <h2>Part 1 - A simple console EXE which uses command line arguments and MEF to identify a Task handler</h2>
+    <h3>Agreeing on a standard system of command line arguments</h3>
+    <p>
+        For the purpose of this article we will name our command line application as <strong>MyUtil.exe</strong> and the first argument will be the short name of a task.
+        All arguments that follow would be simply arguments that are specific to the task
+        
+    </p>
+    <p>
+        <strong>Myutil.exe [nameoftask]  [task argument1] [task argument 2]</strong>
+    </p>
+    <pre>
+        MyUtil.exe task1 arg0 arg1 arg3
+        MyUtil.exe task2 arg5 arg6
+        MyUtil.exe task3
+    </pre>
+    
+    <h3>.NET Core EXE</h3>
+    <p>Create a .NET Core EXE project. For now we will follow a simple approach where all Task handler classes are contained within the EXE project. In the later stages we will refactor the solution so that every Task is contained in a separate class library project.</p>
+    <h3>Contract interface</h3>
+    <p>Create a <strong>Contracts</strong> subfolder and create a class file <strong>ITaskHandler.cs</strong></p>
+    <pre>
+        ///
+        ///Every Task handler must implement this interface
+        ///
+        public interface ITaskHandler
+        {
+            void OnExecute(string[] args)
+        }
+    </pre>
+    <h3>Nuget packages</h3>
+    <p>
+        Add references to the following packages
+        <ul>
+            <li>Install-Package System.ComponentModel.Composition -Version 4.5.0</li>
+        </ul>
+    </p>
+    <h3>Create the Task handler classes</h3>
+    <p> We will add Task specific handler classes.&nbsp; Create a <strong>Tasks</strong> subfolder and add the following classes in this subfolder. Each of the classes implement the interface <strong>ITaskHandler</strong>. 
+        Add the MEF metadata <strong>name</strong> to make it discoverable </p>
+    <pre>
+        ///
+        ///Task 1 - 
+        ///
+        [Export(typeof(ITaskHandler))]
+        [ExportMetadata("name","task1")]
+        public class Task1 : ITaskHandler
+        {
+            public void OnExecute(string[] args)
+            {
+                Console.WriteLine("This is Task 1");
+            }
+        }
+    </pre>
+    <pre>
+        ///
+        ///Task 2 - TO BE DONE - Add MEF metadata
+        ///
+        [Export(typeof(ITaskHandler))]
+        [ExportMetadata("name","task2")]
+        public class Task2 : ITaskHandler
+        {
+            public void OnExecute(string[] args)
+            {
+                Console.WriteLine("This is Task 2");
+            }
+        }
+    </pre>
+    <pre>
+        ///
+        ///Task 3 - TO BE DONE - Add MEF metadata
+        ///
+        [Export(typeof(ITaskHandler))]
+        [ExportMetadata("name","task3")]
+        public class Task3 : ITaskHandler
+        {
+            public void OnExecute(string[] args)
+            {
+                Console.WriteLine("This is Task 3");
+            }
+        }
+
+    </pre>
+    <h3>Create a Container class to Import all instances of Task handlers</h3>
+    <p>Create a new class <strong>Container.cs</strong> under the <strong>Contracts</strong> folder.</p>
+    <pre>
+        ///
+        ///Container class 
+        ///
+        public class Container
+        {
+	    
+        [ImportMany(typeof(ITaskHandler))] public Lazy<ITaskHandler, Dictionary<string, object>&gt;[] Tasks { get; set; } 
+        
+        }
+    </pre>
+    <h3>Discover plugins using the AssemblyCatalog class</h3>
+    <p>MEF provides different ways to resolve dependencies. For our example we will use the <strong>AssemblyCatalog</strong> to discover various task classes</p>
+    <pre>
+        ///
+        ///Container - Discover plugins
+        ///
+        public class Container
+        {
+            public Container() 
+            { 
+                var assem = System.Reflection.Assembly.GetExecutingAssembly(); 
+                var cat = new AssemblyCatalog(assem); 
+                var compose = new CompositionContainer(cat); 
+                compose.ComposeParts(this); 
+            } 
+        }
+    </pre>
+    <h3>Instantiate the Lazy instance and invoke the method OnExecute of ITaskHandler</h3>
+    <p>MEF metadata is a useful way to de-couple implementations from their actual classes. We have provided a short name for each of our plugin <strong>ITaskHandler</strong> implementation classes. 
+        We will use the name metadata atrribute to find and instantiate a concrete instance of ITaskHandler. The properties Value and IsValueCreated of the Lazy class are useful.
+    </p>
+    <pre>
+        internal void ExecTask(string taskname,string[] args)
+        {
+            var lazy = this.Tasks.FirstOrDefault(t => (string)t.Metadata["name"] == taskname);
+            if (lazy == null)
+            {
+                throw new ArgumentException($"No task with name={taskname} was found" );
+            }
+            ITaskHandler task = lazy.Value;
+            task.OnExecute(args);
+        }
+    </pre>
+    <h3>Putting it all together  - executing a plugin from the Main method</h3>
+    <p>We are nearly done. The main method would bind all that we have just done</p>
+    <pre>
+        static void Main(string[] args)
+        {
+            try
+            {
+                Container container = new Container();
+                string taskname = args[0];
+                container.ExecTask(taskname, args);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+    </pre>
+    <h3>Testing the EXE</h3>
+    <p>Navigate to the output folder and fire the following commands</p>
+    <img  src="images/TestConsoleExe.png"/>
+    <hr />
+    <h2>Part 2 - Extending the Console EXE by implementing a simple help system</h2>
+    <p>It would be nice if our simple .NET Console EXE can expose some elementary documentation. We want every Task handler to be responsible for publishing their own documentation.
+        Why not make a separate Task handler for displaying Help (HelpTaskHandler). The HelpTaskHandler class should leverage the MEF meta-data attributes name and description.
+    </p>
+    <pre>
+        HelpTaskHandler TO BE DONE
+    </pre>
+
+    <h3>Using MEF metadata to make every Task emit its own documentation</h3>
+    <p>TODO -- talk about metadata to export a short help</p>
+    
+
+    
+
+
+    <hr />
+
+    <h2>Part 3 - Implementing Tasks in separate assemblies</h2>
+    <p>TODO - What have we done so far? The need for externalizing </p>
+
+    <h2>Future work  - Downloading plugins on demand</h2>
+    <p>Talk about plugins and add ons Notepad++, MS Word</p>
+
+    <hr />
+    <hr/>
+    <h2>Using the code</h2>
+
+    <p>
+        A brief description of how to use the article or code. The class names, the
+        methods and properties, any tricks or tips.
+    </p>
+
+    <p>Blocks of code should be set as style &quot;Formatted&quot; like this: </p>
+
+    <h2>References</h2>
+    <p>
+        <ul>
+            <li>
+                <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">Microsoft's documentation on Managed Extensibility Framework</a>
+            </li>
+        </ul>
+    </p>
+<pre>//
+// Any source code blocks look like this
+//
+var i = 0;
+...</pre>
+
+    <p>Remember to set the Language of your code snippet using the Language dropdown. </p>
+
+    <p>
+        Use the &quot;var&quot; button to wrap Variable or class names in &amp;lt;code&amp;gt;
+        tags like <code>this</code>.
+    </p>
+
+    <h2>Points of Interest</h2>
+
+    <p>
+        Did you learn anything interesting/fun/annoying while writing the code? Did you do
+        anything particularly clever or wild or zany?
+    </p>
+
+    <h2>History</h2>
+
+    <p>Keep a running update of any changes or improvements you've made here. </p>
+
+    <!-------------------------------    That's it!   --------------------------->
+</body>
+
+</html>
+
