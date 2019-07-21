@@ -388,8 +388,8 @@ License:     CPOL
         } 
     </pre>
     <h3>Create a new ITaskHanlder implementation to display the help</h3>
-    <p>In the implementation of HelpTask, we have two methods - DisplayAllTasks and DisplayTaskSpecificHelp. To discover information about other Tasks, we need to
-        access an instance of the Container class. The MEF Attribute Import helps us in injecting dependencies when Lazy objects are instantiated
+    <p>In the implementation of HelpTask, we have two methods - <strong>DisplayAllTasks</strong> and <strong>DisplayTaskSpecificHelp</strong>. To discover information about other Tasks, we need to
+        access an instance of the Container class. The MEF Attribute <strong>Import</strong> helps us in injecting dependencies when <strong>Lazy</strong> objects are instantiated
     </p>
     <pre>
         [Export(typeof(ITaskHandler))]
@@ -415,6 +415,19 @@ License:     CPOL
             public Container Parent { get; set; }
         
         } 
+    </pre>
+    <h3>How does MEF Import work?</h3>
+    <p>To resolve a dependency marked by the Import attribute, MEF will look for a matching property annotated with the <strong>Export</strong> attribute</p>    
+    <pre>
+        public class Container
+        {
+        ///
+        /// Used for dependency injection. E.g. HelpTask.cs would need this to discover all other Task objects
+        ///
+        [Export("parent")]
+        public Container Parent { get; set; }
+
+        }
     </pre>
     <h3>Method - DisplayAllTasks</h3>
     <pre>
@@ -443,7 +456,24 @@ License:     CPOL
         }
     </pre>
     <h3>Method - DisplayTaskSpecificHelp</h3>
-    <pre>TODO</pre>
+    <pre>
+        /// 
+        /// Display the help description for the specified Task 
+        /// 
+        private void DisplayTaskSpecificHelp(string taskname)
+        {
+            Console.WriteLine($"Displaying help on Task:{taskname}");
+            var lazy = Parent.Tasks.FirstOrDefault(t => (string)t.Metadata["name"] == taskname.ToLower());
+            if (lazy == null)
+            {
+                throw new ArgumentException($"No task with name={taskname} was found");
+            }
+            string help = (lazy.Metadata.ContainsKey("help") == false) ? "No help documentation found" : (string)lazy.Metadata["help"];
+            Console.WriteLine($"Task:{taskname}");
+            Console.WriteLine($"{help}");
+        }
+
+    </pre>
     <h3>Putting it all together</h3>
     <pre>
         Start

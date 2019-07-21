@@ -32,6 +32,9 @@ namespace MefSkeletalWithHelp.Contracts
             ITaskHandler task = lazy.Value;
             task.OnExecute(args);
         }
+        /// <summary>
+        /// Used for dependency injection. E.g. HelpTask.cs would need this to discover all other Task objects
+        /// </summary>
         [Export("parent")]
         public Container Parent { get; set; }
 
