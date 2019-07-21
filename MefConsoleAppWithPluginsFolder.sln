@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MefDemoWithPluginsFolder.Main", "MefDemoWithPluginsFolder.Main\MefDemoWithPluginsFolder.Main.csproj", "{FCAEA875-1283-4039-873F-E86502ADC248}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MefDemoWithPluginsFolder.Contracts", "MefDemoWithPluginsFolder.Contracts\MefDemoWithPluginsFolder.Contracts.csproj", "{CFD976C1-AF00-4C55-AE12-7370401E5816}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCAEA875-1283-4039-873F-E86502ADC248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAEA875-1283-4039-873F-E86502ADC248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCAEA875-1283-4039-873F-E86502ADC248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCAEA875-1283-4039-873F-E86502ADC248}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFD976C1-AF00-4C55-AE12-7370401E5816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFD976C1-AF00-4C55-AE12-7370401E5816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFD976C1-AF00-4C55-AE12-7370401E5816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFD976C1-AF00-4C55-AE12-7370401E5816}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBC92203-CBE1-42E8-AD6E-D44EE78AA04E}
+	EndGlobalSection
+EndGlobal
