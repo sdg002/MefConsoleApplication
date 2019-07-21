@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MefSkeletalWithHelp": {
+      "commandName": "Project",
+      "commandLineArgs": "help task1"
+    }
+  }
+}

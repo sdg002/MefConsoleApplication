@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 
 namespace MefSkeletalWithHelp.Tasks
@@ -15,8 +16,54 @@ namespace MefSkeletalWithHelp.Tasks
     {
         public void OnExecute(string[] args)
         {
-            Console.WriteLine("This is Help Task");
+            if (args.Length  == 0)
+            {
+                DisplayAllTasks();
+            }
+            else
+            {
+                string taskname = args[0];
+                DisplayTaskSpecificHelp(taskname);
+            }
 
+        }
+
+        private void DisplayTaskSpecificHelp(string taskname)
+        {
+            Console.WriteLine($"Displaying help on Task:{taskname}");
+            var lazy = Parent.Tasks.FirstOrDefault(t => (string)t.Metadata["name"] == taskname.ToLower());
+            if (lazy == null)
+            {
+                throw new ArgumentException($"No task with name={taskname} was found");
+            }
+            string help = (lazy.Metadata.ContainsKey("help") == false) ? "No help documentation found" : (string)lazy.Metadata["help"];
+            Console.WriteLine($"Task:{taskname}");
+            Console.WriteLine($"{help}");
+        }
+
+        private void DisplayAllTasks()
+        {
+            Console.WriteLine("Basic usage information:");
+            Console.WriteLine("     <executable>    <taskname>  arg1 arg2 arg3");
+            Console.WriteLine("Task specific help");
+            Console.WriteLine("     <executable>    help <taskname>");
+            Console.WriteLine("List of all Tasks");
+            foreach(var lazy in this.Parent.Tasks)
+            {
+                string task = ((string)lazy.Metadata["name"]).ToLower();
+                if (task == "help") continue;
+                Console.WriteLine("-----------------------");
+                string help = null;
+                if (lazy.Metadata.ContainsKey("help"))
+                {
+                    help = lazy.Metadata["help"] as string;
+                }
+                else
+                {
+                    help = "";
+                }
+                Console.WriteLine($"{task}      {help}");
+            }
         }
         [Import("parent")]
         public Container Parent { get; set; }
