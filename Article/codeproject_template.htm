@@ -550,11 +550,120 @@ License:     CPOL
     </p>
 
     <h3>Create a class library for the Contracts </h3>
-    <h3>Create a .NET Core EXE </h3>
-    <h3>Create Task1 and Task2 plugin class libraries</h3>
-    <h3>Add Post build step to copy the output of Task1 and Task2 to a Plugins folder</h3>
+    <p>
+       Add interfaces ITaskHandler and IParent. The interface IParent will provide contextual information to every implementation of ITaskHandler
+    </p>
     <pre>
-        EXE----
+    /// 
+    /// Should be implemented by every custom Task implementation
+    /// 
+    public interface ITaskHandler
+    {
+        void OnExecute(string[] args);
+    }
+    </pre>
+    <pre>
+    /// Allows a Task implementation to interact with the host
+    /// E.g. Task1 can get to know about other Task impelmentations that have been discovered through MEF
+    public interface IParent
+    {
+	Lazy&lt;ITaskHandler,Dictionary&lt;string,Object&gt;&gt;[] Tasks {get;}
+    }
+
+    </pre>
+    <h3>Create a .NET Core EXE </h3>
+    <p>Add the following classes. Add reference to the Contracts class library project. For the sake of brevity I have only displayed a portion of the source code</p>
+        <h4>MefHost.cs</h4>
+        <p>Discover all subfolders in the Plugins subfolder and create a <strong>DirectoryCatalog</strong> for each subfolder. Combine <strong>AssemblyCatalog</strong> and 
+            <strong>DirectoryCatalog</strong> objects into a single instance of <strong>AggregateCatalog</strong>.
+        </p>
+        <pre>
+            public class MefHost : MefDemoWithPluginsFolder.Contracts.IParent
+            {
+                ///
+                ///Responsible for discovering plugins by using a combination of AggregateCatalog, AssemblyCatalog and DirectoryCatalog
+                ///
+                public MefHost(string folderPlugins)
+                {
+                    List&lt;DirectoryCatalog&gt; lstPluginsDirCatalogs = new List&lt;DirectoryCatalog&gt;();
+                    ///
+                    ///Create a collection of DirectoryCatalog objects
+                    ///
+                    string[] subFolders = System.IO.Directory.GetDirectories(folderPlugins);
+                    foreach(var subFolder in subFolders)
+                    {
+                        var dirCat = new DirectoryCatalog(subFolder, "*plugin*.dll");
+                        lstPluginsDirCatalogs.Add(dirCat);
+                    }
+                    var assem = System.Reflection.Assembly.GetExecutingAssembly();
+                    var catThisAssembly = new AssemblyCatalog(assem);
+                    ///
+                    ///Combine all the DirectoryCatalog and AssemblyCatalog using AggregrateCatalog
+                    ///
+                    var catAgg = new AggregateCatalog(lstPluginsDirCatalogs);
+                    catAgg.Catalogs.Add(catThisAssembly);
+                    var compose = new CompositionContainer(catAgg);
+                    this.Parent = this;
+                    compose.ComposeParts(this);
+                }
+
+            }
+        </pre>
+        
+        <h4>Program.cs</h4>
+        <p>We have used the Plugins subfolder under the EXE for all the plugin assemblies</p>
+        <pre>
+            class Program
+            {
+                static void Main()
+                {
+                    string exeFile = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    string exeFolder = System.IO.Path.GetDirectoryName(exeFile);
+                    string folderPlugins = System.IO.Path.Combine(exeFolder, "Plugins");
+                    MefHost host = new MefHost(folderPlugins);
+                    string taskname = null;
+                    if ((args.Length == 0) || (args[0].ToLower() == "help") || (args[0].ToLower() == "/?"))
+                    {
+                        taskname = "help";
+                    }
+                    else
+                    {
+                        taskname = args[0];
+                    }
+                    host.ExecTask(taskname, args.Skip(1).ToArray());
+                }
+            }
+        </pre>
+        <h4>HelpTask.cs</h4>
+        <p>Similar to the implementation in previous sections</p>
+    
+    <h3>Create Task1 and Task2 plugin class libraries</h3>
+    <pre>
+        ///
+        ///Task 1
+        ///
+        [Export(typeof(MefDemoWithPluginsFolder.Contracts.ITaskHandler))]
+        [ExportMetadata("name", "task1")]
+        [ExportMetadata("help", "This is Task1. Usage: --arg0 value0 --arg1 value1 --arg2 value2")]
+        public class Class1 : Contracts.ITaskHandler
+        {
+            public void OnExecute(string[] args)
+            {
+                string sArgs = string.Join("|",args);
+                Console.WriteLine($"This is Task 1. Arguments:{sArgs}");
+            }
+        }
+
+    </pre>
+    <h3>Add Post build step to copy the output of Task1 and Task2 to a Plugins folder</h3>
+    <p>We should remember that we are moving away from "hard" references. The EXE has no compile time knowledge of the existence of Task1 and Task2. 
+        In such a scenario, the output of Task1 and Task2 should be copied over the Plugins folder. For this project we have selected the subfolder 'Plugins' directly under the EXE. 
+        To avoid repetition, we will script a BAT file to do the XCOPY. The BAT file reside in the root of the Solution. 
+        The physical layout of the solution would be as follows</p>
+    <pre>
+        EXE---- 
+                |
+                |
                Bin--
                     |
                     |
@@ -573,53 +682,38 @@ License:     CPOL
                                 |
                                 |
                                 Task 2
-                                    (all assemblies,PDB and other files from the Bin of Task1)
-    </pre>
 
-    <h2>Future work  - Downloading plugins on demand</h2>
-    <p>Talk about plugins and add ons Notepad++, MS Word</p>
+                                    (all assemblies,PDB and other files from the Bin of Task2)
+    </pre>
 
     <hr/>
     <h2>Using the code</h2>
-
     <p>
-        A brief description of how to use the article or code. The class names, the
-        methods and properties, any tricks or tips.
+        Visual Studio 2017 would be a neccessity
     </p>
+    <h3>Github</h3>
+    <p>
+        https://github.com/sdg002/MefConsoleApplication        
+    </p>
+    <h3></h3>
+    
+    <h3>MefConsoleApplication.sln</h3>
+    <p>Demonstrates a simple .NET Core console EXE and using MEF to discover ITaskHandler implementations within the same executable assembly</p>
 
-    <p>Blocks of code should be set as style &quot;Formatted&quot; like this: </p>
+    <h3>MefConsoleApplicationWithPluginsFolder.sln</h3>
+    <p>Demonstrates loading of plugin assemblies from an external folder</p>
+
+
 
     <h2>References</h2>
-    <p>
-        <ul>
-            <li>
-                <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">Microsoft's documentation on Managed Extensibility Framework</a>
-            </li>
-        </ul>
-    </p>
-<pre>//
-// Any source code blocks look like this
-//
-var i = 0;
-...</pre>
+    <ul>
+        <li>
+            <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">Microsoft's documentation on Managed Extensibility Framework</a>
+        </li>
+    </ul>
 
-    <p>Remember to set the Language of your code snippet using the Language dropdown. </p>
 
-    <p>
-        Use the &quot;var&quot; button to wrap Variable or class names in &amp;lt;code&amp;gt;
-        tags like <code>this</code>.
-    </p>
 
-    <h2>Points of Interest</h2>
-
-    <p>
-        Did you learn anything interesting/fun/annoying while writing the code? Did you do
-        anything particularly clever or wild or zany?
-    </p>
-
-    <h2>History</h2>
-
-    <p>Keep a running update of any changes or improvements you've made here. </p>
 
     <!-------------------------------    That's it!   --------------------------->
 </body>
