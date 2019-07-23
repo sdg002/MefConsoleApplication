@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MefDemoWithPluginsFolder.Main", "MefDemoWithPluginsFolder.Main\MefDemoWithPluginsFolder.Main.csproj", "{FCAEA875-1283-4039-873F-E86502ADC248}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MefDemoWithPluginsFolder.Main", "MefDemoWithPluginsFolder.Main\MefDemoWithPluginsFolder.Main.csproj", "{FCAEA875-1283-4039-873F-E86502ADC248}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MefDemoWithPluginsFolder.Contracts", "MefDemoWithPluginsFolder.Contracts\MefDemoWithPluginsFolder.Contracts.csproj", "{CFD976C1-AF00-4C55-AE12-7370401E5816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MefDemoWithPluginsFolder.Contracts", "MefDemoWithPluginsFolder.Contracts\MefDemoWithPluginsFolder.Contracts.csproj", "{CFD976C1-AF00-4C55-AE12-7370401E5816}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MefDemoWithPluginsFolder.Task1", "MefDemoWithPluginsFolder.Task1\MefDemoWithPluginsFolder.Task1.csproj", "{D52F0B42-AF4A-4843-98F3-4F2B57B5EA46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MefDemoWithPluginsFolder.Task1", "MefDemoWithPluginsFolder.Task1\MefDemoWithPluginsFolder.Task1.csproj", "{D52F0B42-AF4A-4843-98F3-4F2B57B5EA46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MefDemoWithPluginsFolder.Task2", "MefDemoWithPluginsFolder.Task2\MefDemoWithPluginsFolder.Task2.csproj", "{0CEEC824-7441-4546-9A28-D51679142179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MefDemoWithPluginsFolder.Task2", "MefDemoWithPluginsFolder.Task2\MefDemoWithPluginsFolder.Task2.csproj", "{0CEEC824-7441-4546-9A28-D51679142179}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47CAD1F9-0B47-4F21-AC7E-C4B470F3BD17}"
+	ProjectSection(SolutionItems) = preProject
+		CopyPlugin.bat = CopyPlugin.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

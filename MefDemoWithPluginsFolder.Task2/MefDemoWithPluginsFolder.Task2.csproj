@@ -2,10 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MefDemoWithPluginsFolder.Contracts\MefDemoWithPluginsFolder.Contracts.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="%windir%\System32\cmd.exe /c $(SolutionDir)\CopyPlugin.bat $(SolutionDir) $(TargetDir) $(ProjectName) $(ConfigurationName)" />
+  </Target>
 
 </Project>
