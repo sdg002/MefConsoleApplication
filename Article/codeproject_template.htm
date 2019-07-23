@@ -111,22 +111,40 @@ License:     CPOL
 
     <h3>Approach 1 - Custom PowerShell cmdlets</h3>
     <p>
-        PowerShell is a beautiful framework which can be easily extended by writing custom .NET modules. Both Azure and AWS provide PowerShell interfaces to interact with their respective infrastructure on the Cloud. <strong>TODO - Show pic of Azure PowerShell </strong>
+        PowerShell is a beautiful framework which can be easily extended by writing custom .NET modules. Both Azure and AWS provide PowerShell interfaces to interact with their respective infrastructure on the Cloud.                 
     </p>
+    <img src="images/AzurePowerShell.PNG"/>
     <h3>Approach 2 - Multiple command line applications on a per task basis</h3>
     <p>This is a very simple approach. It works well if your requirements are small and there is a sense of urgency</p>
     <h3>Approach 3 - Single command line application where every Task is a plugin</h3>
-    <p>In this article, I will be focussing on the third approach. One single command line application. <strong>TODO Show Pic of msbuild</strong></p>
+    <p>In this article, I will be focussing on the third approach. One single command line application that can perform various tasks and each task being modularized into its own class. </p>
+    <pre>
+        Util.exe --task Backups --from 01/01/2019  --to 30/06/3019 --destination c:\Back\
+        Util.exe --task IndexDocuments
+        Util.exe --task ExtractImages -destination c:\dump\
+    </pre>
+
 
     <h2>Brief introduction to Managed Extensibility Framework (MEF)</h2>
     <p>
         MEF is a library built on top of Microsoft .NET  which simplifies the development of plugin based applications.
         MEF can be considered to be a dependency injection framework with the capability to discover dependencies across assembly partitions. 
-        MEF opens up the possibility of decoupling your main application from the implementations.
-        MEF addresses the a very pertinent question in software development:
-        <strong>Can your application be extended after it has been shipped without having to recompile the entire codebase?</strong>
+        MEF opens up the possibility of decoupling your main application from the implementations.                
         Microsoft's documentation on MEF can be found <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">here</a>.
+        MEF addresses some very pertinent questions that frequently arise in the software development lifecycle:
     </p>
+        <ul>
+            <li>
+                Can your application be extended after it has been shipped without having to recompile the entire codebase?
+            </li>
+            <li>
+                Can your application  be designed in such a way that so that the application can find its modules at runtime as opposed to compile time binding?
+            </li>
+            <li>
+                Can your application be easily extended by adding new modules/plugins?
+            </li>
+        </ul>
+
     <h3>Step 1 - Design the contract</h3>
     <pre>
         public interface IMyPlugin
@@ -170,7 +188,7 @@ License:     CPOL
         ///TO BE DONE  - Show snippets of catalog here
         ///
     </pre>
-    <p><strong>TODO  show a block diagram also</strong></p>
+    
 
     <h2>Lazy loading of classes in MEF</h2>
     <p>
@@ -204,6 +222,8 @@ License:     CPOL
     </pre>
     <hr />
     <h2>Part 1 - A simple console EXE which uses command line arguments and MEF to identify a Task handler</h2>
+    <h3>Overview</h3>
+    <p>In this subsection we will develop a simple EXE which is modularized into Task handler classes and the classes reside within the executable itself</p>
     <h3>Agreeing on a standard system of command line arguments</h3>
     <p>
         For the purpose of this article we will name our command line application as <strong>MyUtil.exe</strong> and the first argument will be the short name of a task.
@@ -354,6 +374,7 @@ License:     CPOL
     <img  src="images/TestConsoleExe.png"/>
     <hr />
     <h2>Part 2 - Extending the Console EXE by implementing a simple help system</h2>
+    <h3>Overview</h3>
     <p>It would be nice if our simple .NET Console EXE could expose some usage documentation. Similar to the PowerShell help system, we want the documentation to be displayed on the command line. Ideally, we would want every Task handler to be responsible for publishing their own documentation. Why not make one single implementation of ITaskHandler soley dedicated for displaying Help (<strong>HelpTask.cs</strong>)? The HelpTask class should leverage the MEF meta-data attributes name and description.
     </p>
     <h3>Command line protocol for displaying Help</h3>
@@ -521,7 +542,16 @@ License:     CPOL
     <hr />
 
     <h2>Part 3 - Implementing Tasks in separate assemblies</h2>
-    <p>TODO - What have we done so far? The need for externalizing </p>
+    <h3>Overview</h3>
+    <p>We now have the knowledge to refactor a complex executable into multiple classes where every class performs a specific Task. 
+        We know how to discover these classes through MEF lazy loading and ultimately invoking the methods via a contractual interface.
+        There is one final step. We need to solve the problem of decoupling the various Task handler classes from the main executable. 
+        This will allow us to extend the system in a modular fashion without having the need to re-compile the complete executable
+    </p>
+
+    <h3>Create a class library for the Contracts </h3>
+    <h3>Create a .NET Core EXE </h3>
+    <h3>Create Task1 and Task2 plugin class libraries</h3>
 
     <h2>Future work  - Downloading plugins on demand</h2>
     <p>Talk about plugins and add ons Notepad++, MS Word</p>
