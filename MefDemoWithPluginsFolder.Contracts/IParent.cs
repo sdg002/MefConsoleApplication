@@ -10,6 +10,6 @@ namespace MefDemoWithPluginsFolder.Contracts
     /// </summary>
     public interface IParent
     {
-        Lazy<MefDemoWithPluginsFolder.Contracts.ITaskHandler, Dictionary<string, Object>>[] Tasks { get;  }
+        Lazy<ITaskHandler, Dictionary<string, Object>>[] Tasks { get;  }
     }
 }

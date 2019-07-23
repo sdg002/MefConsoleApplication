@@ -552,6 +552,29 @@ License:     CPOL
     <h3>Create a class library for the Contracts </h3>
     <h3>Create a .NET Core EXE </h3>
     <h3>Create Task1 and Task2 plugin class libraries</h3>
+    <h3>Add Post build step to copy the output of Task1 and Task2 to a Plugins folder</h3>
+    <pre>
+        EXE----
+               Bin--
+                    |
+                    |
+                    Release
+                        |
+                        |
+                        netcoreapp2.1                    
+                            |
+                            |
+                           Plugins
+                                |
+                                |
+                                Task 1
+                                |   
+                                |   (all assemblies,PDB and other files from the Bin of Task1)
+                                |
+                                |
+                                Task 2
+                                    (all assemblies,PDB and other files from the Bin of Task1)
+    </pre>
 
     <h2>Future work  - Downloading plugins on demand</h2>
     <p>Talk about plugins and add ons Notepad++, MS Word</p>
