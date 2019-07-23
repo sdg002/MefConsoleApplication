@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Linq;
 using System.Text;
 
 namespace MefDemoWithPluginsFolder.Main
@@ -30,6 +31,22 @@ namespace MefDemoWithPluginsFolder.Main
             this.Parent = this;
             compose.ComposeParts(this);
         }
+        /// <summary>
+        /// Find task handler whose 'name' metadata matches the specified taskname
+        /// </summary>
+        /// <param name="taskname"></param>
+        /// <param name="args"></param>
+        internal void ExecTask(string taskname, string[] args)
+        {
+            var lazy = this.Tasks.FirstOrDefault(t => (string)t.Metadata["name"] == taskname);
+            if (lazy == null)
+            {
+                throw new ArgumentException($"No task with name={taskname} was found");
+            }
+            var task = lazy.Value;
+            task.OnExecute(args);
+        }
+
         [Export(typeof(MefDemoWithPluginsFolder.Contracts.IParent))]
         public MefDemoWithPluginsFolder.Contracts.IParent Parent { get; set; }
 
