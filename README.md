@@ -1,5 +1,5 @@
 # Overview
-This is the code which accompanies my CodeProject article "Using Managed Extensibility Framework to Build a Modular Console Application". 
+This is the code which accompanies my CodeProject article **Using Managed Extensibility Framework to Build a Modular Console Application**. 
 In this article I have demonstrated how we can break down a Console Application into Tasks, where each Task is implemented by a dedicated C# class and these classes are given short names. The EXE uses Managed Extensibility Framework to load these classes at runtime
 
 ![Console app tasks](https://www.codeproject.com/KB/dotnet/5162604/TestConsoleExe.PNG)
